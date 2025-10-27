@@ -1,0 +1,5 @@
+- 适用于记录命令行指令
+- 需要手动复制命令到命令行中执行
+
+conda activate YOUR_Virtual_ENV
+conda env export > YOUR_Virtual_ENV_requirement.yml
