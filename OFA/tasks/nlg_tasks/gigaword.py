@@ -16,7 +16,17 @@ from fairseq.data import encoders
 from tasks.ofa_task import OFATask, OFAConfig
 from data.nlg_data.summary_dataset import SummaryDataset
 from data.file_dataset import FileDataset
-from datasets import load_metric
+
+# 定义 load_metric 函数
+def load_metric(metric_name):
+    """加载评估指标"""
+    try:
+        from datasets import load_metric as _load_metric
+        return _load_metric(metric_name)
+    except (ImportError, Exception):
+        # 使用 evaluate 库作为备选
+        import evaluate
+        return evaluate.load(metric_name)
 
 logger = logging.getLogger(__name__)
 

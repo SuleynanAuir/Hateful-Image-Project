@@ -14,9 +14,12 @@ import torch.distributed as dist
 from fairseq import utils
 
 from data import data_utils
-from tasks.nlg_tasks.gigaword import fix_tokenization
 import editdistance
 
+# Lazy import to avoid circular dependency
+def _get_fix_tokenization():
+    from tasks.nlg_tasks.gigaword import fix_tokenization
+    return fix_tokenization
 
 def get_symbols_to_strip_from_output(generator):
     if hasattr(generator, "symbols_to_strip_from_output"):
@@ -300,6 +303,7 @@ def eval_glue(task, generator, models, sample, **kwargs):
 
 
 def eval_gigaword(task, generator, models, sample, **kwargs):
+    fix_tokenization = _get_fix_tokenization()
     gen_out = task.inference_step(generator, models, sample)
     hyps, refs = [], []
     results = []
