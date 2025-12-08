@@ -1,0 +1,44 @@
+[34m[1mwandb[0m: Detected [openai] in use.
+[34m[1mwandb[0m: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+[34m[1mwandb[0m: For more information, check out the docs at: https://weave-docs.wandb.ai/
+[34m[1mwandb[0m: [33mWARNING[0m `wandb.require('service')` is a no-op as it is now the default behavior.
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\pytorch_lightning\trainer\connectors\accelerator_connector.py:478: LightningDeprecationWarning: Setting `Trainer(gpus=[0])` is deprecated in v1.7 and will be removed in v2.0. Please use `Trainer(accelerator='gpu', devices=[0])` instead.
+  rank_zero_deprecation(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+`Trainer(limit_train_batches=1.0)` was configured so 100% of the batches per epoch will be used..
+`Trainer(limit_val_batches=1.0)` was configured so 100% of the batches will be used..
+You are using a CUDA device ('NVIDIA GeForce RTX 4070 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\pytorch_lightning\callbacks\model_checkpoint.py:613: UserWarning: Checkpoint directory checkpoints_new exists and is not empty.
+  rank_zero_warn(f"Checkpoint directory {dirpath} exists and is not empty.")
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+   | Name          | Type                  | Params
+---------------------------------------------------------
+0  | clip          | CLIPModel             | 151 M
+1  | image_encoder | CLIPVisionTransformer | 87.5 M
+2  | text_encoder  | CLIPTextTransformer   | 63.2 M
+3  | img_proj      | Sequential            | 985 K
+4  | txt_proj      | Sequential            | 526 K
+5  | pcm           | PCMModule             | 527 K
+6  | fact          | FACTModule            | 2.6 M
+7  | classifier    | Sequential            | 787 K
+8  | auroc         | BinaryAUROC           | 0
+9  | f1            | BinaryF1Score         | 0
+10 | acc           | BinaryAccuracy        | 0
+---------------------------------------------------------
+156 M     Trainable params
+150 M     Non-trainable params
+307 M     Total params
+1,229.428 Total estimated model params size (MB)
+Epoch 0: 100%|█| 23/23 [54:38<00:00, 142.56s/it, loss=0.665, v_num=hz3h, train/loss=0.832, val/loss=0.930, val/acc=0.373, val/auro
+Testing DataLoader 1:   0%|                                                                                 | 0/3 [00:00<?, ?it/s]
+`Trainer.fit` stopped: `max_epochs=1` reached.
+You are using a CUDA device ('NVIDIA GeForce RTX 4070 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+Restoring states from the checkpoint path at checkpoints_new\polished-capybara-2-epoch=00.ckpt
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Loaded model weights from checkpoint at checkpoints_new\polished-capybara-2-epoch=00.ckpt
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\pytorch_lightning\trainer\call.py:48: UserWarning: Detected KeyboardInterrupt, attempting graceful shutdown...
+  rank_zero_warn("Detected KeyboardInterrupt, attempting graceful shutdown...")

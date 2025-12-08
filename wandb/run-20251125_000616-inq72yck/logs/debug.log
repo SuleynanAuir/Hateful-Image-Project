@@ -1,0 +1,37 @@
+2025-11-25 00:06:16,617 INFO    MainThread:13212 [wandb_setup.py:_flush():80] Current SDK version is 0.23.0
+2025-11-25 00:06:16,617 INFO    MainThread:13212 [wandb_setup.py:_flush():80] Configure stats pid to 13212
+2025-11-25 00:06:16,617 INFO    MainThread:13212 [wandb_setup.py:_flush():80] Loading settings from C:\Users\Aiur\.config\wandb\settings
+2025-11-25 00:06:16,617 INFO    MainThread:13212 [wandb_setup.py:_flush():80] Loading settings from C:\Users\Aiur\Hateful-Image-Project\wandb\settings
+2025-11-25 00:06:16,617 INFO    MainThread:13212 [wandb_setup.py:_flush():80] Loading settings from environment variables
+2025-11-25 00:06:16,617 INFO    MainThread:13212 [wandb_init.py:setup_run_log_directory():713] Logging user logs to .\wandb\run-20251125_000616-inq72yck\logs\debug.log
+2025-11-25 00:06:16,618 INFO    MainThread:13212 [wandb_init.py:setup_run_log_directory():714] Logging internal logs to .\wandb\run-20251125_000616-inq72yck\logs\debug-internal.log
+2025-11-25 00:06:16,618 INFO    MainThread:13212 [wandb_init.py:init():840] calling init triggers
+2025-11-25 00:06:16,618 INFO    MainThread:13212 [wandb_init.py:init():845] wandb.init called with sweep_config: {}
+config: {'dataset': 'masked', 'labels': 'original', 'image_size': 224, 'multilingual_tokenizer_path': 'none', 'clip_pretrained_model': 'openai/clip-vit-base-patch32', 'local_pretrained_weights': 'pretrained_projection_sample800.pth', 'caption_mode': 'none', 'use_pretrained_map': True, 'num_mapping_layers': 1, 'map_dim': 768, 'fusion': 'align', 'num_pre_output_layers': 1, 'drop_probs': [0.1, 0.4, 0.2], 'image_encoder': 'clip', 'text_encoder': 'clip', 'freeze_image_encoder': True, 'freeze_text_encoder': True, 'remove_matches': False, 'gpus': [0], 'strategy': None, 'limit_train_batches': 1.0, 'limit_val_batches': 1.0, 'max_steps': -1, 'max_epochs': 20, 'log_every_n_steps': 10, 'val_check_interval': 1.0, 'batch_size': 32, 'lr': 1e-05, 'weight_image_loss': 1.0, 'weight_text_loss': 1.0, 'weight_fine_grained_loss': 1.0, 'weight_super_loss': 1.0, 'weight_decay': 0.0001, 'gradient_clip_val': 0.1, '_wandb': {}}
+2025-11-25 00:06:16,618 INFO    MainThread:13212 [wandb_init.py:init():888] starting backend
+2025-11-25 00:06:16,909 INFO    MainThread:13212 [wandb_init.py:init():891] sending inform_init request
+2025-11-25 00:06:16,925 INFO    MainThread:13212 [wandb_init.py:init():899] backend started and connected
+2025-11-25 00:06:16,927 INFO    MainThread:13212 [wandb_init.py:init():969] updated telemetry
+2025-11-25 00:06:16,951 INFO    MainThread:13212 [wandb_init.py:init():993] communicating run to backend with 90.0 second timeout
+2025-11-25 00:06:18,292 INFO    MainThread:13212 [wandb_init.py:init():1040] starting run threads in backend
+2025-11-25 00:06:18,417 INFO    MainThread:13212 [wandb_run.py:_console_start():2504] atexit reg
+2025-11-25 00:06:18,417 INFO    MainThread:13212 [wandb_run.py:_redirect():2352] redirect: wrap_raw
+2025-11-25 00:06:18,417 INFO    MainThread:13212 [wandb_run.py:_redirect():2421] Wrapping output streams.
+2025-11-25 00:06:18,417 INFO    MainThread:13212 [wandb_run.py:_redirect():2444] Redirects installed.
+2025-11-25 00:06:18,418 INFO    MainThread:13212 [wandb_init.py:init():1080] run started, returning control to user process
+2025-11-25 00:06:18,420 INFO    MainThread:13212 [wandb_run.py:_config_callback():1385] config_cb None None {'param_image_map.0.weight': 393216, 'param_image_map.2.weight': 393216, 'param_image_map.2.bias': 768, 'param_text_map.0.weight': 262144, 'param_text_map.2.weight': 393216, 'param_text_map.2.bias': 768, 'param_pre_output.1.weight': 589824, 'param_pre_output.1.bias': 768, 'param_output.weight': 768, 'param_output.bias': 1, 'param_pre_output_image.1.weight': 589824, 'param_pre_output_image.1.bias': 768, 'param_output_image.weight': 768, 'param_output_image.bias': 1, 'param_pre_output_text.1.weight': 589824, 'param_pre_output_text.1.bias': 768, 'param_output_text.weight': 768, 'param_output_text.bias': 1}
+2025-11-25 01:23:31,075 INFO    wandb-AsyncioManager-main:13212 [service_client.py:_forward_responses():80] Reached EOF.
+2025-11-25 01:23:31,076 INFO    wandb-AsyncioManager-main:13212 [mailbox.py:close():137] Closing mailbox, abandoning 1 handles.
+2025-11-25 01:23:33,330 ERROR   wandb-AsyncioManager-main:13212 [asyncio_manager.py:fn_wrap_exceptions():183] Uncaught exception in run_soon callback.
+Traceback (most recent call last):
+  File "C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\wandb\sdk\lib\asyncio_manager.py", line 181, in fn_wrap_exceptions
+    await fn()
+  File "C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\wandb\sdk\lib\service\service_client.py", line 38, in publish
+    await self._send_server_request(request)
+  File "C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\wandb\sdk\lib\service\service_client.py", line 64, in _send_server_request
+    await self._writer.drain()
+  File "C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\asyncio\streams.py", line 387, in drain
+    await self._protocol._drain_helper()
+  File "C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\asyncio\streams.py", line 190, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost

@@ -1,0 +1,66 @@
+{
+  "os": "Windows-10-10.0.26100-SP0",
+  "python": "CPython 3.9.23",
+  "startedAt": "2025-11-30T15:30:12.470891Z",
+  "args": [
+    "--dataset",
+    "masked",
+    "--labels",
+    "original",
+    "--freeze_image_encoder",
+    "True",
+    "--freeze_text_encoder",
+    "True",
+    "--use_pretrained_map",
+    "True",
+    "--local_pretrained_weights",
+    "pretrained_projection_sample800.pth",
+    "--batch_size",
+    "32",
+    "--lr",
+    "1e-5",
+    "--max_epochs",
+    "20",
+    "--gpus",
+    "0",
+    "--log_every_n_steps",
+    "10",
+    "--wandb_mode",
+    "online"
+  ],
+  "program": "C:\\Users\\Aiur\\Hateful-Image-Project\\new_main.py",
+  "codePath": "new_main.py",
+  "codePathLocal": "new_main.py",
+  "git": {
+    "remote": "https://github.com/SuleynanAuir/Hateful-Image-Project.git",
+    "commit": "1184b5fe20fe902d2b360e089d4eda43a4838e30"
+  },
+  "email": "suleynanaiur@gmail.com",
+  "root": "C:\\Users\\Aiur\\Hateful-Image-Project",
+  "host": "Suleynan-Aiur-LAPTOP-ROG8-lus",
+  "executable": "C:\\Users\\Aiur\\miniconda3\\envs\\hateful-image-ofa\\python.exe",
+  "cpu_count": 24,
+  "cpu_count_logical": 32,
+  "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "748864999424",
+      "used": "645315719168"
+    }
+  },
+  "memory": {
+    "total": "33959702528"
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+      "memoryTotal": "8585740288",
+      "cudaCores": 4608,
+      "architecture": "Ada",
+      "uuid": "GPU-2468a974-c4e7-7699-c1ad-88cb07424ccf"
+    }
+  ],
+  "cudaVersion": "12.7",
+  "writerId": "1ifpv0tj9ojo24jiifsz5tqvkuhg9zzr"
+}

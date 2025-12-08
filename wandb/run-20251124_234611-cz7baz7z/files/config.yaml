@@ -1,0 +1,91 @@
+_wandb:
+    value:
+        cli_version: 0.23.0
+        e:
+            0vd607ptbor3jwt09y1zvfgadva3nh0o:
+                args:
+                    - --dataset
+                    - masked
+                    - --image_pair
+                    - text
+                    - --freeze_strategy
+                    - projection_only
+                    - --gpus
+                    - "0"
+                    - --batch_size
+                    - "32"
+                    - --lr
+                    - "1e-5"
+                    - --max_epochs
+                    - "20"
+                    - --log_every_n_steps
+                    - "10"
+                codePath: pretraining\main.py
+                codePathLocal: pretraining\main.py
+                cpu_count: 24
+                cpu_count_logical: 32
+                cudaVersion: "12.7"
+                disk:
+                    /:
+                        total: "748864999424"
+                        used: "626593341440"
+                email: suleynanaiur@gmail.com
+                executable: C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\python.exe
+                git:
+                    commit: 67b5b89c5304f66629edbeb0996ae55e57627246
+                    remote: https://github.com/SuleynanAuir/Hateful-Image-Project.git
+                gpu: NVIDIA GeForce RTX 4070 Laptop GPU
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 4608
+                      memoryTotal: "8585740288"
+                      name: NVIDIA GeForce RTX 4070 Laptop GPU
+                      uuid: GPU-2468a974-c4e7-7699-c1ad-88cb07424ccf
+                host: Suleynan-Aiur-LAPTOP-ROG8-lus
+                memory:
+                    total: "33959702528"
+                os: Windows-10-10.0.26100-SP0
+                program: C:\Users\Aiur\Hateful-Image-Project\pretraining\main.py
+                python: CPython 3.9.23
+                root: .
+                startedAt: "2025-11-24T15:46:11.818958Z"
+                writerId: 0vd607ptbor3jwt09y1zvfgadva3nh0o
+        m:
+            - "1": trainer/global_step
+              "6":
+                - 3
+              "7": []
+            - "2": '*'
+              "5": 1
+              "6":
+                - 1
+              "7": []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 1
+                - 9
+                - 11
+                - 41
+                - 49
+                - 51
+                - 103
+            "2":
+                - 1
+                - 9
+                - 11
+                - 41
+                - 49
+                - 51
+                - 103
+            "3":
+                - 7
+                - 66
+            "4": 3.9.23
+            "5": 0.23.0
+            "6": 4.44.2
+            "8":
+                - 3
+            "12": 0.23.0
+            "13": windows-amd64
