@@ -1,0 +1,204 @@
+_wandb:
+    value:
+        cli_version: 0.23.0
+        e:
+            wkzxm47qrdbp0p48u0n1iio56ct7c1f0:
+                args:
+                    - --dataset
+                    - masked
+                    - --labels
+                    - original
+                    - --freeze_image_encoder
+                    - "True"
+                    - --freeze_text_encoder
+                    - "True"
+                    - --fusion
+                    - align
+                    - --gpus
+                    - "0"
+                    - --batch_size
+                    - "16"
+                    - --lr
+                    - "1e-4"
+                    - --max_epochs
+                    - "10"
+                    - --log_every_n_steps
+                    - "10"
+                codePath: main.py
+                codePathLocal: main.py
+                cpu_count: 24
+                cpu_count_logical: 32
+                cudaVersion: "12.7"
+                disk:
+                    /:
+                        total: "748864999424"
+                        used: "624902844416"
+                email: suleynanaiur@gmail.com
+                executable: C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\python.exe
+                git:
+                    commit: 67b5b89c5304f66629edbeb0996ae55e57627246
+                    remote: https://github.com/SuleynanAuir/Hateful-Image-Project.git
+                gpu: NVIDIA GeForce RTX 4070 Laptop GPU
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 4608
+                      memoryTotal: "8585740288"
+                      name: NVIDIA GeForce RTX 4070 Laptop GPU
+                      uuid: GPU-2468a974-c4e7-7699-c1ad-88cb07424ccf
+                host: Suleynan-Aiur-LAPTOP-ROG8-lus
+                memory:
+                    total: "33959702528"
+                os: Windows-10-10.0.26100-SP0
+                program: C:\Users\Aiur\Hateful-Image-Project\main.py
+                python: CPython 3.9.23
+                root: .
+                startedAt: "2025-11-24T14:13:43.812189Z"
+                writerId: wkzxm47qrdbp0p48u0n1iio56ct7c1f0
+        m:
+            - "1": trainer/global_step
+              "6":
+                - 3
+              "7": []
+            - "2": '*'
+              "5": 1
+              "6":
+                - 1
+              "7": []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 1
+                - 5
+                - 9
+                - 11
+                - 41
+                - 49
+                - 51
+                - 53
+                - 103
+            "2":
+                - 1
+                - 5
+                - 9
+                - 11
+                - 41
+                - 49
+                - 51
+                - 53
+                - 103
+            "3":
+                - 7
+                - 16
+                - 66
+            "4": 3.9.23
+            "5": 0.23.0
+            "6": 4.44.2
+            "8":
+                - 3
+            "12": 0.23.0
+            "13": windows-amd64
+batch_size:
+    value: 16
+caption_mode:
+    value: none
+clip_pretrained_model:
+    value: openai/clip-vit-base-patch32
+dataset:
+    value: masked
+drop_probs:
+    value:
+        - 0.1
+        - 0.4
+        - 0.2
+freeze_image_encoder:
+    value: true
+freeze_text_encoder:
+    value: true
+fusion:
+    value: align
+gpus:
+    value:
+        - 0
+gradient_clip_val:
+    value: 0.1
+image_encoder:
+    value: clip
+image_size:
+    value: 224
+labels:
+    value: original
+limit_train_batches:
+    value: 1
+limit_val_batches:
+    value: 1
+local_pretrained_weights:
+    value: none
+log_every_n_steps:
+    value: 10
+lr:
+    value: 0.0001
+map_dim:
+    value: 768
+max_epochs:
+    value: 10
+max_steps:
+    value: -1
+multilingual_tokenizer_path:
+    value: none
+num_mapping_layers:
+    value: 1
+num_pre_output_layers:
+    value: 1
+param_image_map.0.bias:
+    value: 768
+param_image_map.0.weight:
+    value: 589824
+param_output.bias:
+    value: 1
+param_output.weight:
+    value: 768
+param_output_image.bias:
+    value: 1
+param_output_image.weight:
+    value: 768
+param_output_text.bias:
+    value: 1
+param_output_text.weight:
+    value: 768
+param_pre_output.1.bias:
+    value: 768
+param_pre_output.1.weight:
+    value: 589824
+param_pre_output_image.1.bias:
+    value: 768
+param_pre_output_image.1.weight:
+    value: 589824
+param_pre_output_text.1.bias:
+    value: 768
+param_pre_output_text.1.weight:
+    value: 589824
+param_text_map.0.bias:
+    value: 768
+param_text_map.0.weight:
+    value: 393216
+remove_matches:
+    value: false
+strategy:
+    value: null
+text_encoder:
+    value: clip
+use_pretrained_map:
+    value: false
+val_check_interval:
+    value: 1
+weight_decay:
+    value: 0.0001
+weight_fine_grained_loss:
+    value: 1
+weight_image_loss:
+    value: 1
+weight_super_loss:
+    value: 1
+weight_text_loss:
+    value: 1

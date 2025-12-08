@@ -6,7 +6,12 @@ from engine import create_model
 
 from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.loggers import WandbLogger
+try:
+    from pytorch_lightning.loggers import WandbLogger
+    _WANDB_AVAILABLE = True
+except Exception:
+    WandbLogger = None
+    _WANDB_AVAILABLE = False
 from pytorch_lightning.plugins import DDPPlugin
 from torch.utils.data import DataLoader
 
@@ -36,16 +41,19 @@ def get_arg_parser():
 
     # model parameters
     parser.add_argument('--clip_pretrained_model', type=str, default='openai/clip-vit-base-patch32')
+    parser.add_argument('--freeze_strategy', default='none', type=str, 
+                        choices=['none', 'projection_only', 'vision_encoder', 'text_encoder', 'encoders'],
+                        help='冻结策略: none(全模型), projection_only(只训练投影层), vision_encoder(冻结视觉编码器), text_encoder(冻结文本编码器), encoders(只训练投影层)')
 
     # training parameters
     parser.add_argument('--gpus', default='0', help='GPU ids concatenated with space')
     parser.add_argument('--strategy', default=None)
-    parser.add_argument('--limit_train_batches', default=1.0)
-    parser.add_argument('--limit_val_batches', default=1.0)
+    parser.add_argument('--limit_train_batches', type=float, default=1.0)
+    parser.add_argument('--limit_val_batches', type=float, default=1.0)
     parser.add_argument('--max_steps', type=int, default=-1)
     parser.add_argument('--max_epochs', type=int, default=-1)
     parser.add_argument('--log_every_n_steps', type=int, default=50)
-    parser.add_argument('--val_check_interval', default=1.0)
+    parser.add_argument('--val_check_interval', type=float, default=1.0)
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size')
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--weight_decay', type=float, default=1e-4)
@@ -64,7 +72,7 @@ def main(args):
     print("Image size:", dataset_train[0]['image'].size)
 
     # load dataloader
-    num_cpus = min(args.batch_size, 16) #(multiprocessing.cpu_count() // len(args.gpus))-1
+    num_cpus = 0  # Windows 下 DataLoader 多进程容易卡住，设为 0 用主进程
     collator = CustomCollator(args)
     dataloader_train = DataLoader(dataset_train, batch_size=args.batch_size, shuffle=True, num_workers=num_cpus, collate_fn=collator)
     dataloader_val = DataLoader(dataset_val, batch_size=args.batch_size, num_workers=num_cpus, collate_fn=collator)
@@ -78,13 +86,40 @@ def main(args):
     # output = model(batch)
     # print(output)
 
-    wandb_logger = WandbLogger(project="meme-pretraining", config=args)
-    checkpoint_callback = ModelCheckpoint(dirpath='checkpoints', filename=wandb_logger.experiment.name+'-{epoch:02d}',  monitor="val/loss", mode='min', verbose=True, save_weights_only=True, save_top_k=1)
-    trainer = Trainer(gpus=args.gpus, max_epochs=args.max_epochs, max_steps=args.max_steps, gradient_clip_val=args.gradient_clip_val, 
-        logger=wandb_logger, log_every_n_steps=args.log_every_n_steps, val_check_interval=args.val_check_interval,
-        strategy=args.strategy, callbacks=[checkpoint_callback],
-        limit_train_batches=args.limit_train_batches, limit_val_batches=args.limit_val_batches,
-        deterministic=True)
+    # logger (optional WandB)
+    if _WANDB_AVAILABLE:
+        try:
+            wandb_logger = WandbLogger(project="meme-pretraining")
+        except Exception:
+            wandb_logger = False
+    else:
+        wandb_logger = False
+
+    filename = 'model-{epoch:02d}'
+    try:
+        if wandb_logger and hasattr(wandb_logger, 'experiment') and hasattr(wandb_logger.experiment, 'name'):
+            filename = wandb_logger.experiment.name + '-{epoch:02d}'
+    except Exception:
+        pass
+
+    checkpoint_callback = ModelCheckpoint(dirpath='checkpoints', filename=filename,  monitor="val/loss", mode='min', verbose=True, save_weights_only=True, save_top_k=1)
+    
+    # 自动检测 GPU/CPU
+    import torch
+    if torch.cuda.is_available() and args.gpus and args.gpus[0] >= 0:
+        trainer = Trainer(gpus=args.gpus, max_epochs=args.max_epochs, max_steps=args.max_steps, gradient_clip_val=args.gradient_clip_val, 
+            logger=wandb_logger, log_every_n_steps=args.log_every_n_steps, val_check_interval=args.val_check_interval,
+            strategy=args.strategy, callbacks=[checkpoint_callback],
+            limit_train_batches=args.limit_train_batches, limit_val_batches=args.limit_val_batches,
+            deterministic=True)
+        print(f"✓ Using GPU: {args.gpus}")
+    else:
+        trainer = Trainer(accelerator='cpu', max_epochs=args.max_epochs, max_steps=args.max_steps, gradient_clip_val=args.gradient_clip_val, 
+            logger=wandb_logger, log_every_n_steps=args.log_every_n_steps, val_check_interval=args.val_check_interval,
+            strategy=args.strategy, callbacks=[checkpoint_callback],
+            limit_train_batches=args.limit_train_batches, limit_val_batches=args.limit_val_batches,
+            deterministic=True)
+        print("✓ Using CPU (no CUDA available or gpus=-1)")
 
     trainer.fit(model, train_dataloaders=dataloader_train, val_dataloaders=dataloader_val)
 
@@ -93,7 +128,7 @@ if __name__ == '__main__':
 
     parser = get_arg_parser()
     args = parser.parse_args()
-    args.gpus = [int(id_) for id_ in args.gpus.split()]
+    args.gpus = [int(id_) for id_ in args.gpus.split()] if args.gpus else []
     if args.strategy == 'ddp':
         args.strategy = DDPPlugin(find_unused_parameters=False)
     elif args.strategy == 'none':

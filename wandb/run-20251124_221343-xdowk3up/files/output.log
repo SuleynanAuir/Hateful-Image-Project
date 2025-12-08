@@ -1,0 +1,66 @@
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\pytorch_lightning\trainer\connectors\accelerator_connector.py:478: LightningDeprecationWarning: Setting `Trainer(gpus=[0])` is deprecated in v1.7 and will be removed in v2.0. Please use `Trainer(accelerator='gpu', devices=[0])` instead.
+  rank_zero_deprecation(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+`Trainer(limit_train_batches=1.0)` was configured so 100% of the batches per epoch will be used..
+`Trainer(limit_val_batches=1.0)` was configured so 100% of the batches will be used..
+`Trainer(val_check_interval=1.0)` was configured so validation will run at the end of the training epoch..
+You are using a CUDA device ('NVIDIA GeForce RTX 4070 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\pytorch_lightning\callbacks\model_checkpoint.py:613: UserWarning: Checkpoint directory checkpoints exists and is not empty.
+  rank_zero_warn(f"Checkpoint directory {dirpath} exists and is not empty.")
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+   | Name               | Type                  | Params
+--------------------------------------------------------------
+0  | acc                | BinaryAccuracy        | 0
+1  | auroc              | BinaryAUROC           | 0
+2  | precision_score    | BinaryPrecision       | 0
+3  | recall             | BinaryRecall          | 0
+4  | f1                 | BinaryF1Score         | 0
+5  | image_encoder      | CLIPVisionTransformer | 87.5 M
+6  | text_encoder       | CLIPTextTransformer   | 63.2 M
+7  | image_map          | Sequential            | 590 K
+8  | text_map           | Sequential            | 393 K
+9  | pre_output         | Sequential            | 590 K
+10 | output             | Linear                | 769
+11 | pre_output_image   | Sequential            | 590 K
+12 | output_image       | Linear                | 769
+13 | pre_output_text    | Sequential            | 590 K
+14 | output_text        | Linear                | 769
+15 | cross_entropy_loss | BCEWithLogitsLoss     | 0
+--------------------------------------------------------------
+2.8 M     Trainable params
+150 M     Non-trainable params
+153 M     Total params
+613.522   Total estimated model params size (MB)
+Epoch 9: 100%|████████████████████████████████████████████████| 46/46 [01:36<00:00,  2.10s/it, loss=1.65, v_num=k3up]    
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\torchmetrics\utilities\prints.py:43: UserWarning: No positive samples in targets, true positive value should be meaningless. Returning zero tensor in true positive score
+  warnings.warn(*args, **kwargs)  # noqa: B028
+Testing DataLoader 0: 100%|████████████████████████████████████████████████████████████| 4/4 [00:48<00:00, 12.20s/it]    
+Epoch 0, global step 42: 'val/auroc' reached 0.65561 (best 0.65561), saving model to 'checkpoints\\quiet-plasma-3-epoch=00.ckpt' as top 1
+Epoch 1, global step 84: 'val/auroc' was not in top 1
+Epoch 2, global step 126: 'val/auroc' reached 0.65891 (best 0.65891), saving model to 'checkpoints\\quiet-plasma-3-epoch=02.ckpt' as top 1
+Epoch 3, global step 168: 'val/auroc' reached 0.68826 (best 0.68826), saving model to 'checkpoints\\quiet-plasma-3-epoch=03.ckpt' as top 1
+Epoch 4, global step 210: 'val/auroc' reached 0.72421 (best 0.72421), saving model to 'checkpoints\\quiet-plasma-3-epoch=04.ckpt' as top 1
+Epoch 5, global step 252: 'val/auroc' was not in top 1
+Epoch 6, global step 294: 'val/auroc' was not in top 1
+Epoch 7, global step 336: 'val/auroc' reached 0.73238 (best 0.73238), saving model to 'checkpoints\\quiet-plasma-3-epoch=07.ckpt' as top 1
+Epoch 8, global step 378: 'val/auroc' was not in top 1
+Epoch 9, global step 420: 'val/auroc' was not in top 1
+`Trainer.fit` stopped: `max_epochs=10` reached.
+You are using a CUDA device ('NVIDIA GeForce RTX 4070 Laptop GPU') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+Restoring states from the checkpoint path at checkpoints\quiet-plasma-3-epoch=07.ckpt
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Loaded model weights from checkpoint at checkpoints\quiet-plasma-3-epoch=07.ckpt
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\pytorch_lightning\utilities\data.py:109: UserWarning: Total length of `DataLoader` across ranks is zero. Please make sure this was your intention.
+  rank_zero_warn(
+C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\lib\site-packages\lightning_fabric\utilities\data.py:55: UserWarning: `DataLoader` returned 0 length. Please make sure this was your intention.
+  rank_zero_warn(
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       Test metric             DataLoader 0             DataLoader 1
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+    dev_seen/accuracy       0.37254902720451355      0.37254902720451355
+     dev_seen/auroc         0.7323826551437378       0.7323826551437378
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

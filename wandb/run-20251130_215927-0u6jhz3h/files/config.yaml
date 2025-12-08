@@ -1,0 +1,133 @@
+_wandb:
+    value:
+        cli_version: 0.23.0
+        e:
+            87zzdu6eau1ozldp2gcha0ttq6touwv8:
+                args:
+                    - --dataset
+                    - masked
+                    - --labels
+                    - original
+                    - --freeze_image_encoder
+                    - "True"
+                    - --freeze_text_encoder
+                    - "True"
+                    - --batch_size
+                    - "32"
+                    - --lr
+                    - "1e-5"
+                    - --max_epochs
+                    - "1"
+                    - --gpus
+                    - "0"
+                    - --log_every_n_steps
+                    - "10"
+                    - --wandb_mode
+                    - online
+                codePath: new_main.py
+                codePathLocal: new_main.py
+                cpu_count: 24
+                cpu_count_logical: 32
+                cudaVersion: "12.7"
+                disk:
+                    /:
+                        total: "748864999424"
+                        used: "644528926720"
+                email: suleynanaiur@gmail.com
+                executable: C:\Users\Aiur\miniconda3\envs\hateful-image-ofa\python.exe
+                git:
+                    commit: 1184b5fe20fe902d2b360e089d4eda43a4838e30
+                    remote: https://github.com/SuleynanAuir/Hateful-Image-Project.git
+                gpu: NVIDIA GeForce RTX 4070 Laptop GPU
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 4608
+                      memoryTotal: "8585740288"
+                      name: NVIDIA GeForce RTX 4070 Laptop GPU
+                      uuid: GPU-2468a974-c4e7-7699-c1ad-88cb07424ccf
+                host: Suleynan-Aiur-LAPTOP-ROG8-lus
+                memory:
+                    total: "33959702528"
+                os: Windows-10-10.0.26100-SP0
+                program: C:\Users\Aiur\Hateful-Image-Project\new_main.py
+                python: CPython 3.9.23
+                root: C:\Users\Aiur\Hateful-Image-Project
+                startedAt: "2025-11-30T13:59:27.449241Z"
+                writerId: 87zzdu6eau1ozldp2gcha0ttq6touwv8
+        m: []
+        python_version: 3.9.23
+        t:
+            "1":
+                - 1
+                - 5
+                - 9
+                - 11
+                - 41
+                - 49
+                - 51
+                - 53
+                - 95
+                - 103
+            "2":
+                - 1
+                - 5
+                - 9
+                - 11
+                - 41
+                - 49
+                - 51
+                - 53
+                - 95
+                - 103
+            "3":
+                - 16
+            "4": 3.9.23
+            "5": 0.23.0
+            "6": 4.44.2
+            "8":
+                - 3
+            "12": 0.23.0
+            "13": windows-amd64
+batch_size:
+    value: 32
+caption_mode:
+    value: none
+clip_pretrained_model:
+    value: openai/clip-vit-base-patch32
+dataset:
+    value: masked
+freeze_image_encoder:
+    value: true
+freeze_text_encoder:
+    value: true
+gpus:
+    value: "0"
+image_size:
+    value: 224
+labels:
+    value: original
+limit_train_batches:
+    value: 1
+limit_val_batches:
+    value: 1
+local_pretrained_weights:
+    value: null
+log_every_n_steps:
+    value: 10
+lr:
+    value: 1e-05
+max_epochs:
+    value: 1
+multilingual_tokenizer_path:
+    value: none
+use_pretrained_map:
+    value: false
+wandb_base_url:
+    value: https://api.wandb.ai
+wandb_mode:
+    value: online
+wandb_timeout:
+    value: 180
+weight_decay:
+    value: 0.0001

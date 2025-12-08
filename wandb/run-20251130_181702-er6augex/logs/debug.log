@@ -1,0 +1,15 @@
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_setup.py:_flush():80] Current SDK version is 0.23.0
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_setup.py:_flush():80] Configure stats pid to 11916
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_setup.py:_flush():80] Loading settings from C:\Users\Aiur\.config\wandb\settings
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_setup.py:_flush():80] Loading settings from C:\Users\Aiur\Hateful-Image-Project\wandb\settings
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_setup.py:_flush():80] Loading settings from environment variables
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_init.py:setup_run_log_directory():713] Logging user logs to .\wandb\run-20251130_181702-er6augex\logs\debug.log
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_init.py:setup_run_log_directory():714] Logging internal logs to .\wandb\run-20251130_181702-er6augex\logs\debug-internal.log
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_init.py:init():840] calling init triggers
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_init.py:init():845] wandb.init called with sweep_config: {}
+config: {'dataset': 'masked', 'labels': 'original', 'image_size': 224, 'clip_pretrained_model': 'openai/clip-vit-base-patch32', 'caption_mode': 'none', 'multilingual_tokenizer_path': 'none', 'freeze_image_encoder': True, 'freeze_text_encoder': True, 'batch_size': 32, 'lr': 1e-05, 'weight_decay': 0.0001, 'gpus': '0', 'max_epochs': 20, 'log_every_n_steps': 10, 'limit_train_batches': 1.0, 'limit_val_batches': 1.0, 'llm_name': 'gpt2', '_wandb': {}}
+2025-11-30 18:17:02,231 INFO    MainThread:11916 [wandb_init.py:init():888] starting backend
+2025-11-30 18:17:02,515 INFO    MainThread:11916 [wandb_init.py:init():891] sending inform_init request
+2025-11-30 18:17:02,525 INFO    MainThread:11916 [wandb_init.py:init():899] backend started and connected
+2025-11-30 18:17:02,526 INFO    MainThread:11916 [wandb_init.py:init():969] updated telemetry
+2025-11-30 18:17:02,544 INFO    MainThread:11916 [wandb_init.py:init():993] communicating run to backend with 90.0 second timeout
