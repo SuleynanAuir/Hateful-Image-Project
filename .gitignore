@@ -1,2 +1,26 @@
 OFA/checkpoints/ofa_base.pt
 OFA/checkpoints/caption_base_best.pt
+# 模型权重文件
+*.pth
+*.pt
+*.bin
+*.h5
+*.ckpt
+*.safetensors
+*.onnx
+*.joblib
+*.pickle
+
+# 模型目录
+models/
+perception_models/
+checkpoints/
+weights/
+pretrained/
+experiments/
+model_zoo/
+
+# 数据缓存文件
+*.npy
+*.npz
+*.pkl
