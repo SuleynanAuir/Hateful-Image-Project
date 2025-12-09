@@ -16,6 +16,7 @@ dependencies:
   - pytorch::pytorch=1.12.0
   - pytorch::torchvision=0.13.0
   - pytorch::torchaudio=0.12.0
+  
   - pip:
     # Fairseq构建依赖
     - hydra-core>=1.0.0
