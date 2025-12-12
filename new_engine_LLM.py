@@ -366,17 +366,7 @@ class NewClassifier(pl.LightningModule):
             self.log('val/f1', self.f1(valid_preds, valid_labels), prog_bar=True)
         return {'loss': loss, 'acc': acc}
 
-    # def test_step(self, batch, batch_idx):
-    #     logits = self(batch)
-    #     labels = batch['labels'].float()
-    #     loss = F.binary_cross_entropy_with_logits(logits, labels)
-    #     preds = (torch.sigmoid(logits) > 0.5).long()
-    #     acc = (preds == labels.long()).float().mean()
-    #     self.log('test/loss', loss, prog_bar=True)
-    #     self.log('test/acc', acc, prog_bar=True)
-    #     self.log('test/auroc', self.auroc(torch.sigmoid(logits), labels.int()), prog_bar=True)
-    #     self.log('test/f1', self.f1(preds, labels.int()), prog_bar=True)
-    #     return {'loss': loss, 'acc': acc}
+
     def test_step(self, batch, batch_idx, dataloader_idx: int = 0):
         logits = self(batch)
         labels = batch['labels'].float()

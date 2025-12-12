@@ -22,10 +22,10 @@ def get_arg_parser():
     p.add_argument('--freeze_image_encoder', type=bool, default=True)
     p.add_argument('--freeze_text_encoder', type=bool, default=True)
     p.add_argument('--batch_size', type=int, default=16)
-    p.add_argument('--lr', type=float, default=1e-4)
+    p.add_argument('--lr', type=float, default=1e-5)
     p.add_argument('--weight_decay', type=float, default=1e-4)
     p.add_argument('--gpus', default='0')
-    p.add_argument('--max_epochs', type=int, default=10)
+    p.add_argument('--max_epochs', type=int, default=20)
     p.add_argument('--log_every_n_steps', type=int, default=10)
     p.add_argument('--limit_train_batches', type=float, default=1.0)
     p.add_argument('--limit_val_batches', type=float, default=1.0)
@@ -37,6 +37,10 @@ def get_arg_parser():
     return p
 
 
+import os
+from datetime import datetime
+import json
+
 def main(args):
     # datasets: train/eval/test
     dataset_train = load_dataset(args=args, split='train')
@@ -46,6 +50,12 @@ def main(args):
     print('Number of training examples:', len(dataset_train))
     print('Number of eval examples:', len(dataset_val))
     print('Number of test examples:', len(dataset_test))
+    
+    # 检查test集是否为空
+    if len(dataset_test) == 0:
+        print("\n⚠️  WARNING: Test dataset is EMPTY! Check your CSV file for 'test' split data.")
+        import sys
+        sys.exit(1)
     
     # Validate limit_*_batches to ensure at least 1 batch will be processed
     num_val_batches = len(dataset_val) // args.batch_size + (1 if len(dataset_val) % args.batch_size else 0)
@@ -110,27 +120,50 @@ def main(args):
         wandb_logger = WandbLogger(experiment=run)
     else:
         print('WandB logger not active; proceeding without WandB.')
-        # generate a fallback run_name for checkpointing
         prefix = getattr(args, 'dataset', 'run')
         run_name = f"{prefix}-{int(time.time())}"
         wandb_logger = None
     ckpt = ModelCheckpoint(dirpath='checkpoints_new', filename=run_name+'-{epoch:02d}',
                            monitor='val/acc', mode='max', save_top_k=1)
-    trainer = Trainer(
-    accelerator='gpu', 
-    devices=[int(i) for i in args.gpus.split()],  
-    max_epochs=args.max_epochs,
-    logger=wandb_logger,
-    log_every_n_steps=args.log_every_n_steps,
-    limit_train_batches=args.limit_train_batches,
-    limit_val_batches=args.limit_val_batches,
-    deterministic=False,
-    callbacks=[ckpt]
-)
 
+    trainer = Trainer(
+        accelerator='gpu', 
+        devices=[int(i) for i in args.gpus.split()],  
+        max_epochs=args.max_epochs,
+        logger=wandb_logger,
+        log_every_n_steps=args.log_every_n_steps,
+        limit_train_batches=args.limit_train_batches,
+        limit_val_batches=args.limit_val_batches,
+        deterministic=False,
+        callbacks=[ckpt]
+    )
 
     trainer.fit(model, train_dataloaders=dl_train, val_dataloaders=dl_val)
-    trainer.test(ckpt_path='best', dataloaders=[dl_val, dl_test])
+
+    # save to txt 
+    test_results = trainer.test(ckpt_path='best', dataloaders=[dl_val, dl_test])
+    save_dir = 'results_txt'
+    os.makedirs(save_dir, exist_ok=True)
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    out_path = os.path.join(save_dir, f'results_{args.dataset}_{timestamp}.txt')
+
+    with open(out_path, 'w', encoding='utf-8') as f:
+
+        f.write('===== Args =====\n')
+        for k, v in sorted(vars(args).items()):
+            f.write(f'{k}: {v}\n')
+        f.write('\n===== Test Results (trainer.test) =====\n')
+        for i, res in enumerate(test_results):
+            f.write(f'\n--- Dataloader {i} ---\n')
+            for k, v in res.items():
+                try:
+                    v = json.loads(json.dumps(v, default=lambda x: float(x)))
+                except Exception:
+                    pass
+                f.write(f'{k}: {v}\n')
+
+    print(f"[INFO] Test results saved to: {out_path}")
+
 
 
 if __name__ == '__main__':

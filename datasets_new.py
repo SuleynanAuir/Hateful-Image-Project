@@ -26,7 +26,18 @@ class HatefulMemesDataset(Dataset):
         
         # 加载 CSV
         self.df = pd.read_csv(self.info_file)
-        self.df = self.df[self.df['split'] == self.split].reset_index(drop=True)
+        
+        # 处理 split 别名
+        split_to_load = split
+        if split in ['dev_seen', 'eval', 'test_seen']:
+            split_to_load = 'dev'
+        elif split == 'test_unseen':
+            split_to_load = 'test'
+        
+        self.df = self.df[self.df['split'] == split_to_load].reset_index(drop=True)
+        
+        # 打印加载信息以便调试
+        print(f"[{self.__class__.__name__}] Loaded split='{split}' (mapped to '{split_to_load}'): {len(self.df)} samples from {os.path.basename(self.info_file)}")
 
         # 修复 float 列
         float_cols = self.df.select_dtypes(float).columns
@@ -171,7 +182,8 @@ class CustomCollator(object):
                 parts.append(item['description'])
             if item.get('keywords', '') != '':
                 parts.append(item['keywords'])
-            enhanced_texts.append(" [SEP] ".join(parts))
+            enhanced_texts.append(" [SEP] ".join(str(part) for part in parts))
+
 
 
         text_output = self.text_processor(
