@@ -84,9 +84,8 @@ class HatefulMemesDataset(Dataset):
         item['idx_meme'] = row['id']
         item['idx_image'] = row['pseudo_img_idx']
         item['idx_text'] = row['pseudo_text_idx']
-        item['caption'] = row['caption'] if 'caption' in row else ''
+        # item['caption'] = row['caption'] if 'caption' in row else ''
         item['description'] = row['description'] if 'description' in row else ''
-        item['keywords'] = row['keywords'] if 'keywords' in row else ''
 
         # fine-grained
         if self.labels.startswith('fine_grained'):
@@ -118,7 +117,7 @@ class TamilMemesDataset(Dataset):
         item = {}
         item['image'] = Image.open(f"{self.root_folder}/{row['meme_path']}").convert('RGB').resize((self.image_size, self.image_size))
         item['text'] = row['text']
-        item['caption'] = row['text_transliterated'] # named as caption just to match the format of HatefulMemesDataset
+       #item['caption'] = row['text_transliterated'] # named as caption just to match the format of HatefulMemesDataset
         item['label'] = row['is_troll']
 
         return item
@@ -176,12 +175,8 @@ class CustomCollator(object):
             parts = []
             if item.get('text', '') != '':
                 parts.append(item['text'])
-            if item.get('caption', '') != '':
-                parts.append(item['caption'])
             if item.get('description', '') != '':
                 parts.append(item['description'])
-            if item.get('keywords', '') != '':
-                parts.append(item['keywords'])
             enhanced_texts.append(" [SEP] ".join(str(part) for part in parts))
 
 

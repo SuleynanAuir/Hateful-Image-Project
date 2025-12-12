@@ -42,7 +42,6 @@ def main(args):
     dataset_train = load_dataset(args=args, split='train')
     dataset_val = load_dataset(args=args, split='eval')
     dataset_test = load_dataset(args=args, split='test')
-
     print('Number of training examples:', len(dataset_train))
     print('Number of eval examples:', len(dataset_val))
     print('Number of test examples:', len(dataset_test))

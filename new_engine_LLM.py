@@ -96,6 +96,7 @@ class FACTModule(nn.Module):
             nn.Linear(dim * 2, self.llm_dim),
             nn.LayerNorm(self.llm_dim)
         )
+
         # simple GNN for CRM
         self.gnn = SimpleGNNLayer(dim)
         self.gnn2 = SimpleGNNLayer(dim)
@@ -270,6 +271,7 @@ class NewClassifier(pl.LightningModule):
         self.auroc = torchmetrics.AUROC(task='binary')
         self.f1 = torchmetrics.F1Score(task='binary')
         self.acc = torchmetrics.Accuracy(task='binary')
+
 
     def encode_image(self, pixel_values):
         # pixel_values: [B, 3, H, W]
