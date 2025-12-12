@@ -19,7 +19,7 @@ class HatefulMemesDataset(Dataset):
         
         # 选择使用 top_800_info.csv 或 hateful_memes_expanded.csv
         if use_top800:
-            self.info_file = os.path.join(os.path.dirname(root_folder), 'sample_data', 'top_800_info.csv')
+            self.info_file = os.path.join(os.path.dirname(root_folder), 'sample_data', '10000_info.csv')
             # top_800 使用 'dev'，兼容旧的 'dev_seen' 以及用户期望的 'eval'
             if self.split in ['dev_seen', 'eval']:
                 self.split = 'dev'
@@ -55,9 +55,9 @@ class HatefulMemesDataset(Dataset):
         image_fn = row['img'].split('/')[1]
         
         # 处理 masked/inpainted 文件名后缀
-        if 'top_800_mask' in self.image_folder:
+        if 'top_10000_mask' in self.image_folder: #
             image_fn = image_fn.replace('.png', '_masked.png')
-        elif 'top_800_inpaint' in self.image_folder:
+        elif 'top_10000_inpaint' in self.image_folder: #
             image_fn = image_fn.replace('.png', '_inpainted.png')
         
         item['image'] = Image.open(f"{self.image_folder}/{image_fn}").convert('RGB').resize((self.image_size, self.image_size))
@@ -194,9 +194,9 @@ def load_dataset(args, split):
     if args.dataset == 'original':
         image_folder = 'data/hateful_memes/img'
     elif args.dataset == 'masked':
-        image_folder = 'data/sample_data/top_800_mask'
+        image_folder = 'data/sample_data/top_10000_mask'#改了数据集
     elif args.dataset == 'inpainted':
-        image_folder = 'data/sample_data/top_800_inpaint'
+        image_folder = 'data/sample_data/top_10000_inpaint' #改了数据集
     
     if args.dataset == 'tamil':
         dataset = TamilMemesDataset(root_folder='data/Tamil_troll_memes', split=split, image_size=args.image_size)
