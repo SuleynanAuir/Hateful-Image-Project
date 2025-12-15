@@ -316,6 +316,7 @@ class NewClassifier(pl.LightningModule):
         # Classifier: concat h_PC, h_SP, h_CR
         logits = self.classifier(torch.cat([h_pc, h_sp, h_cr], dim=-1)).squeeze(-1)  # [B]
         return logits
+    
 
     def training_step(self, batch, batch_idx):
         # Forward for main classifier
