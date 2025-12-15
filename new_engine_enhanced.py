@@ -54,8 +54,8 @@ class PCMModule(nn.Module):
 
 class FACTModule(nn.Module):
     """
-    FACT = SPM (LLM-guided multimodal semantic prior)
-         + CRM (Graph + GNN reasoning)
+    FACT = SPM (LLM-guided semantic prior)
+         + CRM (Graph reasoning)
     """
 
     def __init__(
@@ -65,26 +65,21 @@ class FACTModule(nn.Module):
         top_k=8,
         llm_name="gpt-5",
         use_api=True,
-        api_key=None,
-        api_base=None,
+        api_key="sk-zk21884c49fc398427914f99fc30171ecb068f998dc6f05b",
+        api_base= "https://api.zhizengzeng.com/v1",
     ):
         super().__init__()
 
         self.top_k = top_k
         self.llm_dim = llm_dim or dim
-        self.llm_name = llm_name
-        self.use_api = use_api
 
         # -------- LLM API --------
-        self.api_key = api_key or "sk-zk21884c49fc398427914f99fc30171ecb068f998dc6f05b"
-        self.api_base = api_base or "https://api.zhizengzeng.com/v1"
-
         self.api_client = openai.OpenAI(
-            api_key=self.api_key,
-            base_url=self.api_base,
+            api_key=api_key,
+            base_url=api_base,
         )
 
-        # -------- Projection to LLM space --------
+        # -------- Projection --------
         self.to_llm = nn.Sequential(
             nn.Linear(dim, dim * 2),
             nn.GELU(),
@@ -92,17 +87,15 @@ class FACTModule(nn.Module):
             nn.LayerNorm(self.llm_dim),
         )
 
-        # Resize text embedding if needed
         self.embed_resize = None
 
-        # LLM-side projection (post fusion)
-        self.llm_in_proj = nn.Sequential(
+        # token update
+        self.token_fuse = nn.Sequential(
             nn.Linear(self.llm_dim, self.llm_dim),
             nn.GELU(),
             nn.LayerNorm(self.llm_dim),
         )
 
-        # Pooling for social perception vector
         self.sp_pool = nn.Sequential(
             nn.Linear(self.llm_dim, self.llm_dim),
             nn.GELU(),
@@ -111,63 +104,63 @@ class FACTModule(nn.Module):
         )
 
         # -------- CRM --------
-        self.gnn = SimpleGNNLayer(dim)
+        self.gnn1 = SimpleGNNLayer(dim)
         self.gnn2 = SimpleGNNLayer(dim)
-
 
     def build_spm(self, Hv, Ht, texts):
         """
         Hv: [B, P, D]
         Ht: [B, T, D]
-        texts: list[str]
         """
-
         B, P, _ = Hv.shape
         T = Ht.shape[1]
+        device = Hv.device
 
-        # ---- project vision & text tokens to llm space ----
-        Hv_llm = self.to_llm(Hv)  # [B, P, d_llm]
-        Ht_llm = self.to_llm(Ht)  # [B, T, d_llm]
+        # ---- project tokens ----
+        Hv_llm = self.to_llm(Hv)
+        Ht_llm = self.to_llm(Ht)
+        mm_tokens = torch.cat([Ht_llm, Hv_llm], dim=1)  # [B, N, d]
+        N = T + P
 
-        # ---- get LLM text embeddings (semantic anchor) ----
-        embed_response = self.api_client.embeddings.create(
+        # ---- LLM prior ----
+        emb = self.api_client.embeddings.create(
             input=texts,
             model="text-embedding-ada-002",
         )
+        prior = torch.tensor(
+            [e.embedding for e in emb.data],
+            device=device,
+            dtype=mm_tokens.dtype,
+        )
 
-        text_emb = torch.tensor(
-            [e.embedding for e in embed_response.data],
-            device=Hv.device,
-            dtype=Hv.dtype,
-        )  # [B, D_text]
-
-        if text_emb.size(-1) != self.llm_dim:
+        if prior.size(-1) != self.llm_dim:
             if self.embed_resize is None:
                 self.embed_resize = nn.Linear(
-                    text_emb.size(-1), self.llm_dim
-                ).to(text_emb.device)
-            text_emb = self.embed_resize(text_emb)
+                    prior.size(-1), self.llm_dim
+                ).to(device)
+            prior = self.embed_resize(prior)
 
-        text_emb = text_emb.unsqueeze(1)  # [B, 1, d_llm]
+        prior = F.normalize(prior, dim=-1)
+        tokens_norm = F.normalize(mm_tokens, dim=-1)
 
-        # Treat Hv/Ht as conditioning tokens guided by text
-        mm_tokens = torch.cat(
-            [text_emb, Ht_llm, Hv_llm], dim=1
-        )  # [B, 1+T+P, d_llm]
+        importance = torch.einsum("bd,bnd->bn", prior, tokens_norm)
+        importance = torch.softmax(importance, dim=-1)
 
-        mm_tokens = self.llm_in_proj(mm_tokens)
+        # ---- PRIOR-CONDITIONED TOKEN UPDATE (关键) ----
+        sp_tokens = mm_tokens + importance.unsqueeze(-1) * mm_tokens
+        sp_tokens = self.token_fuse(sp_tokens)
 
-        # ---- Social Perception Vector ----
-        h_sp = self.sp_pool(mm_tokens.mean(dim=1))
-
-        # ---- Multimodal Attention (Graph Prior) ----
+        # ---- attention for graph ----
         scale = math.sqrt(self.llm_dim)
-        A = torch.einsum(
-            "bnd,bmd->bnm", mm_tokens, mm_tokens
-        ) / scale  # [B, N, N]
+        A = torch.einsum("bnd,bmd->bnm", sp_tokens, sp_tokens) / scale
+        A = A * importance.unsqueeze(1) * importance.unsqueeze(2)
 
-        return h_sp, A
+        # ---- social perception vector ----
+        h_sp = self.sp_pool(
+            (sp_tokens * importance.unsqueeze(-1)).sum(dim=1)
+        )
 
+        return h_sp, sp_tokens, A
 
     def build_crm_edges(self, A, text_len, patch_len):
         B, N, _ = A.shape
@@ -177,12 +170,12 @@ class FACTModule(nn.Module):
         for b in range(B):
             e = []
 
-            # E_tt
+            # text chain
             for i in range(text_len - 1):
                 e.append((offset + i, offset + i + 1))
                 e.append((offset + i + 1, offset + i))
 
-            # E_pp (grid)
+            # patch grid
             grid = int(math.sqrt(patch_len))
             base = offset + text_len
 
@@ -196,8 +189,8 @@ class FACTModule(nn.Module):
                         e.append((idx, idx + 1))
                         e.append((idx + 1, idx))
 
-            # E_tp (Top-K attention)
-            A_tp = A[b, :text_len, text_len : text_len + patch_len]
+            # cross-modal
+            A_tp = A[b, :text_len, text_len:]
             K = min(self.top_k, patch_len)
             topk = torch.topk(A_tp, K, dim=-1).indices
 
@@ -214,30 +207,19 @@ class FACTModule(nn.Module):
         return edges_all.t().contiguous()
 
     def forward(self, Hv, Ht, texts):
-        """
-        Hv: [B, P, D]
-        Ht: [B, T, D]
-        texts: list[str]
-        """
-
         B, P, D = Hv.shape
         T = Ht.shape[1]
 
-        if texts is None:
-            texts = ["Are there false claims?" for _ in range(B)]
+        h_sp, sp_tokens, A = self.build_spm(Hv, Ht, texts)
 
-        # ----- SPM -----
-        h_sp, A = self.build_spm(Hv, Ht, texts)
+        # ---- CRM ----
+        edge_index = self.build_crm_edges(A, T, P).to(Hv.device)
+        x = sp_tokens.reshape(B * (T + P), self.llm_dim)
 
-        # ----- CRM -----
-        encs = torch.cat([Ht, Hv], dim=1)  # [B, T+P, D]
-        edge_index = self.build_crm_edges(A, T, P).to(encs.device)
-
-        x = encs.reshape(B * (T + P), D)
-        x = self.gnn(x, edge_index)
+        x = self.gnn1(x, edge_index)
         x = self.gnn2(x, edge_index)
-        x = x.reshape(B, T + P, D)
 
+        x = x.reshape(B, T + P, self.llm_dim)
         h_cr = x.mean(dim=1)
 
         return h_sp, h_cr
