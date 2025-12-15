@@ -1,0 +1,14 @@
+{"time":"2025-12-15T21:19:01.9431601+08:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"C:\\Users\\gidle\\Documents\\GitHub\\Hateful-Image-Project\\wandb\\offline-run-20251215_211854-5bjgf67i\\logs\\debug-core.log"}
+{"time":"2025-12-15T21:19:06.5251247+08:00","level":"INFO","msg":"created new stream","id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:06.5257664+08:00","level":"INFO","msg":"stream: started","id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:06.5257664+08:00","level":"INFO","msg":"handler: started","stream_id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:06.526365+08:00","level":"INFO","msg":"sender: started","stream_id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:06.5257664+08:00","level":"INFO","msg":"writer: Do: started","stream_id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:06.5782314+08:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-12-15T21:19:08.5942889+08:00","level":"INFO","msg":"stream: closing","id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:08.594797+08:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-12-15T21:19:08.5965834+08:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-12-15T21:19:08.5965834+08:00","level":"INFO","msg":"handler: closed","stream_id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:08.5965834+08:00","level":"INFO","msg":"writer: Close: closed","stream_id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:08.5965834+08:00","level":"INFO","msg":"sender: closed","stream_id":"5bjgf67i"}
+{"time":"2025-12-15T21:19:08.5975426+08:00","level":"INFO","msg":"stream: closed","id":"5bjgf67i"}

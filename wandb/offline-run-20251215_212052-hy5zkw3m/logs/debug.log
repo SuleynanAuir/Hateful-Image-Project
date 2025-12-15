@@ -1,0 +1,52 @@
+2025-12-15 21:20:52,995 INFO    MainThread:12956 [wandb_setup.py:_flush():67] Current SDK version is 0.19.8
+2025-12-15 21:20:52,995 INFO    MainThread:12956 [wandb_setup.py:_flush():67] Configure stats pid to 12956
+2025-12-15 21:20:52,995 INFO    MainThread:12956 [wandb_setup.py:_flush():67] Loading settings from C:\Users\gidle\.config\wandb\settings
+2025-12-15 21:20:52,995 INFO    MainThread:12956 [wandb_setup.py:_flush():67] Loading settings from C:\Users\gidle\Documents\GitHub\Hateful-Image-Project\wandb\settings
+2025-12-15 21:20:52,995 INFO    MainThread:12956 [wandb_setup.py:_flush():67] Loading settings from environment variables
+2025-12-15 21:20:53,002 INFO    MainThread:12956 [wandb_init.py:setup_run_log_directory():647] Logging user logs to C:\Users\gidle\Documents\GitHub\Hateful-Image-Project\wandb\offline-run-20251215_212052-hy5zkw3m\logs\debug.log
+2025-12-15 21:20:53,002 INFO    MainThread:12956 [wandb_init.py:setup_run_log_directory():648] Logging internal logs to C:\Users\gidle\Documents\GitHub\Hateful-Image-Project\wandb\offline-run-20251215_212052-hy5zkw3m\logs\debug-internal.log
+2025-12-15 21:20:53,002 INFO    MainThread:12956 [wandb_init.py:init():761] calling init triggers
+2025-12-15 21:20:53,002 INFO    MainThread:12956 [wandb_init.py:init():766] wandb.init called with sweep_config: {}
+config: {'dataset': 'inpainted', 'labels': 'original', 'image_size': 224, 'clip_pretrained_model': 'openai/clip-vit-base-patch32', 'caption_mode': 'none', 'multilingual_tokenizer_path': 'none', 'freeze_image_encoder': True, 'freeze_text_encoder': True, 'batch_size': 16, 'lr': 1e-05, 'weight_decay': 0.0001, 'gpus': '0', 'max_epochs': 1, 'log_every_n_steps': 10, 'limit_train_batches': 1.0, 'limit_val_batches': 1.0, 'use_pretrained_map': False, 'local_pretrained_weights': None, 'wandb_mode': 'offline', 'wandb_timeout': 180, 'wandb_base_url': 'https://api.wandb.ai', '_wandb': {}}
+2025-12-15 21:20:53,002 INFO    MainThread:12956 [wandb_init.py:init():784] starting backend
+2025-12-15 21:20:53,237 INFO    MainThread:12956 [wandb_init.py:init():788] sending inform_init request
+2025-12-15 21:20:53,266 INFO    MainThread:12956 [backend.py:_multiprocessing_setup():101] multiprocessing start_methods=spawn, using: spawn
+2025-12-15 21:20:53,266 INFO    MainThread:12956 [wandb_init.py:init():798] backend started and connected
+2025-12-15 21:20:53,274 INFO    MainThread:12956 [wandb_init.py:init():891] updated telemetry
+2025-12-15 21:20:53,275 INFO    MainThread:12956 [wandb_init.py:init():915] communicating run to backend with 180.0 second timeout
+2025-12-15 21:20:53,478 INFO    MainThread:12956 [wandb_init.py:init():990] starting run threads in backend
+2025-12-15 21:20:53,847 INFO    MainThread:12956 [wandb_run.py:_console_start():2375] atexit reg
+2025-12-15 21:20:53,850 INFO    MainThread:12956 [wandb_run.py:_redirect():2227] redirect: wrap_raw
+2025-12-15 21:20:53,850 INFO    MainThread:12956 [wandb_run.py:_redirect():2292] Wrapping output streams.
+2025-12-15 21:20:53,850 INFO    MainThread:12956 [wandb_run.py:_redirect():2315] Redirects installed.
+2025-12-15 21:20:53,854 INFO    MainThread:12956 [wandb_init.py:init():1032] run started, returning control to user process
+2025-12-15 21:27:38,623 WARNING MsgRouterThr:12956 [router.py:message_loop():63] message_loop has been closed
+Traceback (most recent call last):
+  File "D:\Anaconda3\envs\hateful_pe\Lib\site-packages\wandb\sdk\lib\sock_client.py", line 208, in _read_packet_bytes
+    data = self._sock.recv(self._bufsize)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Anaconda3\envs\hateful_pe\Lib\site-packages\wandb\sdk\interface\router_sock.py", line 27, in _read_message
+    return self._sock_client.read_server_response(timeout=1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\hateful_pe\Lib\site-packages\wandb\sdk\lib\sock_client.py", line 235, in read_server_response
+    data = self._read_packet_bytes(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\hateful_pe\Lib\site-packages\wandb\sdk\lib\sock_client.py", line 212, in _read_packet_bytes
+    raise SockClientClosedError from e
+wandb.sdk.lib.sock_client.SockClientClosedError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Anaconda3\envs\hateful_pe\Lib\site-packages\wandb\sdk\interface\router.py", line 56, in message_loop
+    msg = self._read_message()
+          ^^^^^^^^^^^^^^^^^^^^
+  File "D:\Anaconda3\envs\hateful_pe\Lib\site-packages\wandb\sdk\interface\router_sock.py", line 29, in _read_message
+    raise MessageRouterClosedError from e
+wandb.sdk.interface.router.MessageRouterClosedError
+2025-12-15 21:27:38,666 INFO    MsgRouterThr:12956 [mailbox.py:close():129] Closing mailbox, abandoning 0 handles.
