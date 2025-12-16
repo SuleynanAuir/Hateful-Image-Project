@@ -35,7 +35,7 @@ class SimpleGNNLayer(nn.Module):
 
 
 class PCMModule(nn.Module):
-    """Presupposed Context Module: h_PC = (W1 h_v + b1) ⊙ (W2 h_t + b2)."""
+    """Presupposed Context Module: h_PC = (W1 h_v + b1) + (W2 h_t + b2)."""
     def __init__(self, dim):
         super().__init__()
         self.lin_v = nn.Sequential(
@@ -49,7 +49,12 @@ class PCMModule(nn.Module):
         # h_v: [B, D], h_t: [B, D]
         v_ctx = self.lin_v(h_v)
         t_ctx = self.lin_t(h_t)
-        return v_ctx * t_ctx  # Hadamard product -> [B, D]
+
+        h_PC = v_ctx + t_ctx 
+        h_PC = F.relu(h_PC) 
+
+        return h_PC
+
 
 
 class FACTModule(nn.Module):
@@ -125,7 +130,6 @@ class FACTModule(nn.Module):
         # ---- LLM prior ----
         emb = self.api_client.embeddings.create (
             input=texts,
-            texts = ["Are there any false claims?"], 
             model="text-embedding-ada-002",
         )
         prior = torch.tensor(
@@ -312,7 +316,7 @@ class NewClassifier(pl.LightningModule):
         # PCM
         h_pc = self.pcm(h_v, h_t)  # [B, D]
         # FACT (SPM + CRM)
-        texts_for_llm = ["Are there false claims? " for _ in range(Hv.size(0))]
+        texts_for_llm = ["Are there any false claims? Are these hateful content？ " for _ in range(Hv.size(0))]
         h_sp, h_cr = self.fact(Hv, Ht, texts_for_llm)  # [B, D], [B, D]
         # Classifier: concat h_PC, h_SP, h_CR
         logits = self.classifier(torch.cat([h_pc, h_sp, h_cr], dim=-1)).squeeze(-1)  # [B]
