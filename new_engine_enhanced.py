@@ -35,7 +35,7 @@ class SimpleGNNLayer(nn.Module):
 
 
 class PCMModule(nn.Module):
-    """Presupposed Context Module: h_PC = (W1 h_v + b1) + (W2 h_t + b2)."""
+    """Presupposed Context Module: h_PC = (W1 h_v + b1) ⊙ (W2 h_t + b2)."""
     def __init__(self, dim):
         super().__init__()
         self.lin_v = nn.Sequential(
@@ -44,16 +44,27 @@ class PCMModule(nn.Module):
         self.lin_t = nn.Sequential(
             nn.Linear(dim, dim), nn.ReLU(), nn.Dropout(0.1), nn.LayerNorm(dim)
         )
+        # Linear transforms for the Hadamard product
+        self.W1 = nn.Linear(dim, dim)
+        self.W2 = nn.Linear(dim, dim)
+        self.b1 = nn.Parameter(torch.zeros(dim))  # Bias term
+        self.b2 = nn.Parameter(torch.zeros(dim))  # Bias term
 
     def forward(self, h_v, h_t):
         # h_v: [B, D], h_t: [B, D]
         v_ctx = self.lin_v(h_v)
         t_ctx = self.lin_t(h_t)
 
-        h_PC = v_ctx + t_ctx 
-        h_PC = F.relu(h_PC) 
+        # Apply the linear transforms for Hadamard product
+        v_ctx_transformed = self.W1(v_ctx) + self.b1
+        t_ctx_transformed = self.W2(t_ctx) + self.b2
+
+        # Hadamard product
+        h_PC = v_ctx_transformed * t_ctx_transformed  # Element-wise multiplication (Hadamard product)
+        h_PC = F.relu(h_PC)  # Activation
 
         return h_PC
+
 
 
 
@@ -316,7 +327,7 @@ class NewClassifier(pl.LightningModule):
         # PCM
         h_pc = self.pcm(h_v, h_t)  # [B, D]
         # FACT (SPM + CRM)
-        texts_for_llm = ["Are there any false claims? Are these hateful content？ " for _ in range(Hv.size(0))]
+        texts_for_llm = ["Are there any false claims?  " for _ in range(Hv.size(0))]
         h_sp, h_cr = self.fact(Hv, Ht, texts_for_llm)  # [B, D], [B, D]
         # Classifier: concat h_PC, h_SP, h_CR
         logits = self.classifier(torch.cat([h_pc, h_sp, h_cr], dim=-1)).squeeze(-1)  # [B]
