@@ -13,7 +13,7 @@ from new_engine_enhanced import NewClassifier
 
 def get_arg_parser():
     p = argparse.ArgumentParser(description='New pipeline for Hateful Memes Detection')
-    p.add_argument('--dataset', default='masked', choices=['original','masked','inpainted'])
+    p.add_argument('--dataset', default='inpainted', choices=['original','masked','inpainted'])
     p.add_argument('--labels', default='original')
     p.add_argument('--image_size', type=int, default=224)
     p.add_argument('--clip_pretrained_model', type=str, default='openai/clip-vit-base-patch32')
@@ -21,11 +21,11 @@ def get_arg_parser():
     p.add_argument('--multilingual_tokenizer_path', type=str, default='none')
     p.add_argument('--freeze_image_encoder', type=bool, default=True)
     p.add_argument('--freeze_text_encoder', type=bool, default=True)
-    p.add_argument('--batch_size', type=int, default=16)
-    p.add_argument('--lr', type=float, default=1e-4)
+    p.add_argument('--batch_size', type=int, default=32)
+    p.add_argument('--lr', type=float, default=1e-5)#####
     p.add_argument('--weight_decay', type=float, default=1e-4)
     p.add_argument('--gpus', default='0')
-    p.add_argument('--max_epochs', type=int, default=10)
+    p.add_argument('--max_epochs', type=int, default=20)####
     p.add_argument('--log_every_n_steps', type=int, default=10)
     p.add_argument('--limit_train_batches', type=float, default=1.0)
     p.add_argument('--limit_val_batches', type=float, default=1.0)
@@ -116,14 +116,19 @@ def main(args):
     ckpt = ModelCheckpoint(dirpath='checkpoints_new', filename=run_name+'-{epoch:02d}',
                            monitor='val/acc', mode='max', save_top_k=1)
     trainer = Trainer(
-    accelerator="gpu",
-    devices=1,
-    max_epochs=args.max_epochs,
+        accelerator="gpu",
+        devices=1,
+        max_epochs=args.max_epochs,
     )
 
-
+    # Train the model
     trainer.fit(model, train_dataloaders=dl_train, val_dataloaders=dl_val)
-    trainer.test(ckpt_path='best', dataloaders=[dl_val, dl_test])
+
+    # Test after every epoch
+    for epoch in range(args.max_epochs):
+        print(f"Epoch {epoch + 1}/{args.max_epochs}: Testing...")
+        trainer.test(ckpt_path='best', dataloaders=[dl_val, dl_test])
+
 
 
 if __name__ == '__main__':
