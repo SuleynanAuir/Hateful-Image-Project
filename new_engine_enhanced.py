@@ -123,9 +123,9 @@ class FACTModule(nn.Module):
         N = T + P
 
         # ---- LLM prior ----
-        emb = self.api_client.embeddings.create(
+        emb = self.api_client.embeddings.create (
             input=texts,
-            texts = ["Are there any false claims?"] 
+            texts = ["Are there any false claims?"], 
             model="text-embedding-ada-002",
         )
         prior = torch.tensor(
