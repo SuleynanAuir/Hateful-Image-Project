@@ -55,12 +55,18 @@ class HatefulMemesDataset(Dataset):
         image_fn = row['img'].split('/')[1]
         
         # 处理 masked/inpainted 文件名后缀
-        if 'top_10000_mask' in self.image_folder: #
+        if 'top_10000_mask' in self.image_folder:
             image_fn = image_fn.replace('.png', '_masked.png')
-        elif 'top_10000_inpaint' in self.image_folder: #
+        elif 'top_10000_inpaint' in self.image_folder:
             image_fn = image_fn.replace('.png', '_inpainted.png')
         
-        item['image'] = Image.open(f"{self.image_folder}/{image_fn}").convert('RGB').resize((self.image_size, self.image_size))
+        image_path = f"{self.image_folder}/{image_fn}"
+        try:
+            item['image'] = Image.open(image_path).convert('RGB').resize((self.image_size, self.image_size))
+        except FileNotFoundError:
+            print(f"Warning: Image file {image_path} not found, skipping.")
+            return self.__getitem__((idx + 1) % len(self.df))  # Skip to next image in case of error
+        
         item['text'] = row['text']
         item['label'] = row['label']
         item['idx_meme'] = row['id']
@@ -73,6 +79,7 @@ class HatefulMemesDataset(Dataset):
                 item[label] = row[label]
 
         return item
+
 
 
 class TamilMemesDataset(Dataset):
