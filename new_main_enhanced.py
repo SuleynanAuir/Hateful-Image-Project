@@ -22,10 +22,10 @@ def get_arg_parser():
     p.add_argument('--freeze_image_encoder', type=bool, default=True)
     p.add_argument('--freeze_text_encoder', type=bool, default=True)
     p.add_argument('--batch_size', type=int, default=32)
-    p.add_argument('--lr', type=float, default=1e-5)#####
+    p.add_argument('--lr', type=float, default=1e-5)
     p.add_argument('--weight_decay', type=float, default=1e-4)
     p.add_argument('--gpus', default='0')
-    p.add_argument('--max_epochs', type=int, default=20)####
+    p.add_argument('--max_epochs', type=int, default=20)
     p.add_argument('--log_every_n_steps', type=int, default=10)
     p.add_argument('--limit_train_batches', type=float, default=1.0)
     p.add_argument('--limit_val_batches', type=float, default=1.0)
@@ -115,20 +115,22 @@ def main(args):
         wandb_logger = None
     ckpt = ModelCheckpoint(dirpath='checkpoints_new', filename=run_name+'-{epoch:02d}',
                            monitor='val/acc', mode='max', save_top_k=1)
+    
     trainer = Trainer(
         accelerator="gpu",
         devices=1,
         max_epochs=args.max_epochs,
+        # 可以添加这一行让控制台输出更紧凑，避免刷屏 (可选)
+        # enable_progress_bar=True, 
     )
 
-    # Train the model
-    trainer.fit(model, train_dataloaders=dl_train, val_dataloaders=dl_val)
-
-    # Test after every epoch
-    for epoch in range(args.max_epochs):
-        print(f"Epoch {epoch + 1}/{args.max_epochs}: Testing...")
-        trainer.test(ckpt_path='best', dataloaders=[dl_val, dl_test])
-
+    # 【核心修改点】: 将 val_dataloaders 设置为一个列表 [dl_val, dl_test]
+    # 这样 validation_step 会依次处理这两个数据集
+    print("Starting training (validating on both Eval and Test sets)...")
+    trainer.fit(model, train_dataloaders=dl_train, val_dataloaders=[dl_val, dl_test])
+    # 训练结束后，依然可以使用 best model 再跑一次最终测试
+    print("Running final test with best checkpoint...")
+    trainer.test(ckpt_path='best', dataloaders=[dl_val, dl_test])
 
 
 if __name__ == '__main__':

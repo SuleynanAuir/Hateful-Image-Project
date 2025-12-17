@@ -372,23 +372,59 @@ class NewClassifier(pl.LightningModule):
         self.log('train/loss', cls_loss, prog_bar=True, on_step=True, on_epoch=False)
         return total_loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch, batch_idx, dataloader_idx=0):
         logits = self(batch)
         labels = batch['labels'].float()
         loss = F.binary_cross_entropy_with_logits(logits, labels)
         preds = (torch.sigmoid(logits) > 0.5).long()
         acc = (preds == labels.long()).float().mean()
-        self.log('val/loss', loss, prog_bar=True)
-        self.log('val/acc', acc, prog_bar=True)
-        # Filter out samples with label -1 for metrics (torchmetrics only accepts [0, 1])
+        
+        # 判断当前是 Eval集 (idx=0) 还是 Test集 (idx=1)
+        # 对应 main.py 中 val_dataloaders=[dl_val, dl_test] 的顺序
+        prefix = 'val' if dataloader_idx == 0 else 'test'
+        
+        # 记录 Loss 和 Acc (on_epoch=True 确保会在 epoch 结束时计算平均值)
+        # add_dataloader_idx=False 防止 lightning 自动加后缀
+        self.log(f'{prefix}/loss', loss, on_step=False, on_epoch=True, prog_bar=False, add_dataloader_idx=False)
+        self.log(f'{prefix}/acc', acc, on_step=False, on_epoch=True, prog_bar=False, add_dataloader_idx=False)
+        
+        # 计算 AUROC 和 F1
         valid_mask = (labels >= 0) & (labels <= 1)
         if valid_mask.sum() > 0:
             valid_logits = torch.sigmoid(logits[valid_mask])
             valid_preds = preds[valid_mask]
             valid_labels = labels[valid_mask].int()
-            self.log('val/auroc', self.auroc(valid_logits, valid_labels), prog_bar=True)
-            self.log('val/f1', self.f1(valid_preds, valid_labels), prog_bar=True)
-        return {'loss': loss, 'acc': acc}
+            
+            self.log(f'{prefix}/auroc', self.auroc(valid_logits, valid_labels), 
+                     on_step=False, on_epoch=True, prog_bar=False, add_dataloader_idx=False)
+            self.log(f'{prefix}/f1', self.f1(valid_preds, valid_labels), 
+                     on_step=False, on_epoch=True, prog_bar=False, add_dataloader_idx=False)
+            
+        return loss
+
+    # 【新增】 每个 Epoch 验证循环结束后，手动从 metrics 中提取数值并打印
+    def on_validation_epoch_end(self):
+        # 从 self.trainer.callback_metrics 中获取本轮 Epoch 的平均指标
+        metrics = self.trainer.callback_metrics
+        epoch = self.current_epoch
+        
+        # 辅助函数：安全获取指标并格式化，如果不存在则显示 N/A
+        def get_m(name):
+            if name in metrics:
+                return f"{metrics[name].item():.4f}"
+            return "N/A"
+
+        print(f"\n{'-'*30} Epoch {epoch} Results {'-'*30}")
+        
+        # 打印 Eval 集结果 (对应 dataloader_idx=0)
+        print(f" >> [Test0 Set] Loss: {get_m('val/loss')} | Acc: {get_m('val/acc')} | "
+              f"F1: {get_m('val/f1')} | AUROC: {get_m('val/auroc')}")
+              
+        # 打印 Test 集结果 (对应 dataloader_idx=1)
+        print(f" >> [Test1 Set] Loss: {get_m('test/loss')} | Acc: {get_m('test/acc')} | "
+              f"F1: {get_m('test/f1')} | AUROC: {get_m('test/auroc')}")
+              
+        print(f"{'-'*76}\n")
 
     # def test_step(self, batch, batch_idx):
     #     logits = self(batch)
